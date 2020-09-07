@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-from tensorflow.keras.applications.mobilent_v2 import perprocess_input
+from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.preprocessing.image import img_to_array
 from tensorflow.keras.models import load_model
 
@@ -31,6 +31,8 @@ weightsPath  = os.path.sep.join([args["face"],
 
 net = cv2.dnn.readNet(prototxtPath, weightsPath)
 
+model = load_model(args["model"])
+
 image  = cv2.imread(args["image"])
 orig   = image.copy()
 (h, w) = image.shape[:2]
@@ -41,7 +43,7 @@ blob = cv2.dnn.blobFromImage(image, 1.0, (300, 300),
 print("[INFO] computing face detections...")
 net.setInput(blob)
 detections = net.forward()
-
+print("!")
 for i in range(0, detections.shape[2]):
     confidence = detections[0, 0, i, 2]
     if confidence > args["confidence"]:
@@ -68,5 +70,5 @@ for i in range(0, detections.shape[2]):
                 cv2.FONT_HERSHEY_SIMPLEX, 0.45, color, 2)
         cv2.rectangle(image, (startX, startY), (endX, endY), color, 2)
 
-cv.imshow("Output", image)
+cv2.imshow("Output", image)
 cv2.waitKey(0)
